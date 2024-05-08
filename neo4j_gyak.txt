@@ -1,0 +1,128 @@
+MongoDB: 1, 2, 4, 7, 11, 12, 13
+Neo4J: 17-22, 27, 28
+1.)
+db.collection.find({},{"user_id":1, "firstName":1, "_id":0})
+
+2.)
+db.collection.find({"firstName":"Grace"}, {"email":1, "password":1, "_id":0})
+
+4.)
+FILTER: {class_id:339, student_id: {$lt:100}}
+
+7.)
+FILTER: {likes_count: {$gt:2}}
+PROJECT: {ingredients:0, rating:0}
+SORT:{cook_time: -1}
+
+11.) A mongo shellben kérdezzük le, hogy a receptek gyűjteményben mely dokumentumoknál szerepel a recept nevében (title) a Tacos szó!
+A megjelenés kellően szép (json-szerű) legyen!
+
+use gyak_compass
+
+db.receptek.find({"title":{$regex:/Tacos/}},{}).pretty()
+
+12.)A mongo shell-ben kérdezzük le, hogy recept típusonként (type) mennyi a főzési idők (cook_time) összege!
+
+db.receptek.aggregate([{$group:{_id:"$type", total:{$sum: "$cook_time"}}}])
+
+13.)A mongo shell-ben kérdezzük le, hogy a receptek gyűjteményben hány olyan dokumentum van, ahol:
+A recept 4 főre szól (servings) ÉS
+A tag-ek között szerepel a "quick" vagy az "easy" (legalább az egyik)
+
+db.receptek.find({$and: [{servings:4},{tags:{$in:["quick", "easy"]}}]}, {}).count()
+
+
+
+17.)A Neo4J Sandbox Movie adatbázisából kérdezze le azon személyek nevét és születési évét, akik 1964-ben vagy 1965-ben születtek!
+
+MATCH (p:Person)
+WHERE p.born=1964 or p.born=1965 
+RETURN p.name, p.born
+
+18.)A Neo4J Sandbox Movie adatbázisából kérdezze le azon filmek címét és megjelenési évét, amelyek címe A-betűvel kezdődik! (WHERE, STARTS WITH).
+A listát rendezzük a megjelenési év szerint csökkenő sorrendbe (ORDER BY)!
+
+MATCH (m:Movie)
+WHERE m.title STARTS WITH 'A'
+RETURN m.title, m.released
+ORDER BY m.released DESC
+
+19.)A Neo4J Sandbox Movie adatbázisából kérdezze le, hogy milyen filmeket készített (:PROCUCED) Joel Silver!
+Csak a filmek címe jelenjen meg
+
+MATCH (p:Person)-[:PRODUCED]-(m:Movie)
+WHERE p.name='Joel Silver'
+RETURN m.title
+
+vagy
+
+MATCH (p:Person {name: 'Joel Silver'})-[:PRODUCED]->(m:Movie)
+RETURN m.title
+
+20.)A Neo4J Sandbox Movie adatbázisából kérdezze le, hogy melyik rendező hány filmet rendezett! (:DIRECTED).
+Csak azokat a rendezőket jelenítsük meg, akik 1-nél több filmet rendeztek! (WHERE)
+
+MATCH (p:Person)-[:DIRECTED]->(m:Movie)
+WITH p.name AS `nev`, COUNT(*) AS `db`
+WHERE db>1
+RETURN nev
+
+21.)A Neo4J Sandbox Movie adatbázisából jelenítsük meg azokat a személyeket, akik egyszerre voltak szereplők és rendezők is valamely filmben!
+
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)<-[:DIRECTED]-(p:Person)
+RETURN (p)
+
+vagy 
+
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WHERE EXISTS ((p:Person)-[:DIRECTED]->(m:Movie))
+RETURN (p)
+
+22.)A Neo4J Sandbox Movie adatbázisából kérdezze le, hogy mely filmek hány szereplője van!
+A lista legyen sorba rendezve a szereplők száma szerint csökkenően, azon belül a film címe szerint növekvően
+
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+RETURN m.title, COUNT(*) AS `DB`
+ORDER BY DB DESC, m.title
+LIMIT 10
+
+23.)
+CREATE INDEX i_person_born
+FOR (p:Person)
+On (p.name, p.born)
+
+24.)
+PROFILE
+MATCH (p:Person)
+WHERE p.born>=1980 and p.born<=2000
+RETURN p.name, p.born
+
+
+27.)A Neo4J Desktop-ban hozzon létre új projektet, majd egy új adatbázist tanulo néven!
+Nyissa meg a Neo4J Browsert, majd tegye aktívvá az új adatbázist!
+Hozzon létre :Tanulo és :Tanar csomópontokat az alábbiak alapján:
+Tanulo(Nev, Eletkor, Atlag) Kiss Béla, 22, 3.5 Nagy Ilona, 23, 4.4
+Tanar(Nev, Szak) Tóth Ottó, matematika Nagy Ivett, informatika
+A csomópontok létrehozása után kérdezze le a tanulo adatbázis összes csomópontját!
+
+create project-->+Add(nev es jelszo) -->Start-->Create database(tanulo)-->open neo4j browser-->select db to use(tanulo)
+
+CREATE(:tanulo {nev:"Kiss Béla", eletkor:22, atlag:3.5}),
+(:tanulo {nev:"Nagy Ilona", eletkor:23, atlag:4.4}),
+(:tanar {nev:"Tóth Ottó", szak:"matematika"}),
+(:tanar {nev:"Nagy Ivett", szak:"informatika"})
+
+MATCH (p)
+RETURN (p)
+
+28.)Az előző feladatban létrehozott tanulo adatbázisban hozzon létre két új kapcsolatot :Tanit néven az alábbiak szerint:
+Tóth Ottó tanítja Kiss Bélát
+Nagy Ivett tanítja Nagy Ilonát
+
+MATCH(t:tanar),(tan:tanulo)
+WHERE t.nev= 'Tóth Ottó' and tan.nev= 'Kiss Béla'
+CREATE (t)-[:Tanit]->(tan)
+
+MATCH(t:tanar),(tan:tanulo)
+WHERE t.nev= 'Nagy Ivett' and tan.nev= 'Nagy Ilona'
+CREATE (t)-[:Tanit]->(tan)
