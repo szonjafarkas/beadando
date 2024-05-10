@@ -1,0 +1,76 @@
+CREATE TABLE csapatok (
+    nev          VARCHAR(200) NOT NULL,
+    alapitas_eve INTEGER NOT NULL,
+    helyszin     VARCHAR(200) NOT NULL,
+    edzo         VARCHAR(200) NOT NULL
+);
+
+ALTER TABLE csapatok ADD CONSTRAINT csapatok_pk PRIMARY KEY ( nev );
+
+
+CREATE TABLE golok (
+    golok_szama INTEGER NOT NULL,
+    jatekos     VARCHAR(200),
+    merkozes_id INTEGER NOT NULL
+);
+
+ALTER TABLE golok
+    ADD CONSTRAINT golok_jatekosok_fk FOREIGN KEY ( jatekos )
+        REFERENCES jatekosok ( nev );
+
+ALTER TABLE golok
+    ADD CONSTRAINT golok_merkozesek_fk FOREIGN KEY ( merkozes_id )
+        REFERENCES merkozesek ( id );
+		
+		
+CREATE TABLE jatekosok (
+    nev       VARCHAR(200) NOT NULL,
+    eletkor   INTEGER NOT NULL,
+    magassag  INTEGER NOT NULL,
+    piros_lap INTEGER,
+    sarga_lap INTEGER,
+	pozicio   VARCHAR(200),
+    csapat    VARCHAR(200) NOT NULL
+);
+
+ALTER TABLE jatekosok ADD CONSTRAINT jatekosokv1_pk PRIMARY KEY ( nev );
+
+ALTER TABLE jatekosok
+    ADD CONSTRAINT jatekosok_csapatok_fk FOREIGN KEY ( csapat )
+        REFERENCES csapatok ( nev );
+		
+		
+CREATE TABLE merkozesek (
+    id       INTEGER NOT NULL,
+    idopont  DATE NOT NULL,
+    helyszin VARCHAR(200) NOT NULL,
+    biro     VARCHAR(200) NOT NULL,
+    hazai    VARCHAR(200) NOT NULL,
+    vendeg   VARCHAR(200) NOT NULL
+);
+
+ALTER TABLE merkozesek ADD CONSTRAINT merkozesek_pk PRIMARY KEY ( id );
+
+ALTER TABLE merkozesek
+    ADD CONSTRAINT merkozesek_csapatok_fk FOREIGN KEY ( hazai )
+        REFERENCES csapatok ( nev );
+
+ALTER TABLE merkozesek
+    ADD CONSTRAINT merkozesek_csapatok_fkv2 FOREIGN KEY ( vendeg )
+        REFERENCES csapatok ( nev );
+		
+		
+CREATE TABLE pontszamok (
+    pont             INTEGER NOT NULL,
+    merkozesek_szama INTEGER NOT NULL,
+    csapat           VARCHAR(200) NOT NULL
+);
+
+CREATE UNIQUE INDEX pontszamok__idx ON
+    pontszamok (
+        csapat
+    ASC );
+
+ALTER TABLE pontszamok
+    ADD CONSTRAINT pontszamok_csapatok_fk FOREIGN KEY ( csapat )
+        REFERENCES csapatok ( nev );
