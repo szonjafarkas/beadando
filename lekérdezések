@@ -2,3 +2,10 @@ SELECT TOP 5 j.nev as 'Név', j.csapat as 'Csapat', sum(g.golok_szama) as 'Gólo
 FROM golok g join jatekosok j on g.jatekos=j.nev
 GROUP by j.nev, j.csapat
 ORDER BY sum(g.golok_szama) desc 
+
+SELECT CASE WHEN j.nev is null THEN 'Összesített:' ELSE j.nev END ,
+    CASE WHEN j.csapat is null THEN '' ELSE j.csapat END AS 'Csapat',
+    IIF(SUM(g.golok_szama) IS NULL, 0, SUM(g.golok_szama)) AS 'Gólok'
+FROM jatekosok j LEFT JOIN golok g ON g.jatekos = j.nev
+GROUP BY ROLLUP (j.csapat,j.nev)
+ORDER BY j.csapat, j.nev
