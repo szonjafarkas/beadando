@@ -17,3 +17,11 @@ JOIN pontszamok p ON j.csapat = p.csapat
 JOIN golok g ON j.nev = g.jatekos
 GROUP BY j.nev, j.piros_lap, j.sarga_lap, p.pont
 ORDER BY 'Játékos értéke' DESC
+
+SELECT pozicio as 'Pozíció',
+       COUNT(*) as 'Játékosok száma',
+       MIN(eletkor) as 'Legfiatalabb játékos',
+       MAX(eletkor) as 'Legidősebb játékos',
+       AVG(eletkor) as 'Átlagéletkor'
+FROM jatekosok
+GROUP BY pozicio
