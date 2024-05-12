@@ -9,3 +9,11 @@ SELECT CASE WHEN j.nev is null THEN 'Összesített:' ELSE j.nev END ,
 FROM jatekosok j LEFT JOIN golok g ON g.jatekos = j.nev
 GROUP BY ROLLUP (j.csapat,j.nev)
 ORDER BY j.csapat, j.nev
+
+SELECT j.nev AS 'Név',
+    (SUM(g.golok_szama) * 2) - (j.piros_lap * 0.2) - (j.sarga_lap * 0.1) + (p.pont * 0.1) AS 'Játékos értéke'
+FROM jatekosok j 
+JOIN pontszamok p ON j.csapat = p.csapat
+JOIN golok g ON j.nev = g.jatekos
+GROUP BY j.nev, j.piros_lap, j.sarga_lap, p.pont
+ORDER BY 'Játékos értéke' DESC
