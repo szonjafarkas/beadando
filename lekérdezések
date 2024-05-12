@@ -1,3 +1,4 @@
-SELECT g.jatekos as 'Játékosok', j.csapat as 'Csapat', COUNT(g.golok_szama) OVER(PARTITION BY j.csapat) as 'Gólok'
+SELECT TOP 5 j.nev as 'Név', j.csapat as 'Csapat', sum(g.golok_szama) as 'Gólok'
 FROM golok g join jatekosok j on g.jatekos=j.nev
-ORDER BY 'Gólok' desc
+GROUP by j.nev, j.csapat
+ORDER BY sum(g.golok_szama) desc 
