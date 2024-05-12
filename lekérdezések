@@ -1,0 +1,3 @@
+SELECT g.jatekos as 'Játékosok', j.csapat as 'Csapat', COUNT(g.golok_szama) OVER(PARTITION BY j.csapat) as 'Gólok'
+FROM golok g join jatekosok j on g.jatekos=j.nev
+ORDER BY 'Gólok' desc
