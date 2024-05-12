@@ -1,7 +1,6 @@
 CREATE TABLE csapatok (
     nev          VARCHAR(200) NOT NULL,
     alapitas_eve INTEGER NOT NULL,
-    helyszin     VARCHAR(200) NOT NULL,
     edzo         VARCHAR(200) NOT NULL
 );
 
