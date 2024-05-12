@@ -75,11 +75,11 @@ ALTER TABLE pontszamok
 
 
 INSERT INTO csapatok (nev,alapitas_eve,helyszin,edzo)
-values ('Binaris keresofa FC',2020,'Debrecen','Nagy Bela'),
-('IKEA FC',1756,'Budapest','Jurgen Czopf'),
-('Kertvarosi kigyok',1954,'Budapest','Kreativ Karoly'),
-('Mucsarocsoge FC',1600,'Mucsarocsoge','Kiss Bela'),
-('Szeged United',1878,'Szeged','Rudolf Wangnick')
+values ('Binaris keresofa FC',2020,'Nagy Bela'),
+('IKEA FC',1756,'Jurgen Czopf'),
+('Kertvarosi kigyok',1954,'Kreativ Karoly'),
+('Mucsarocsoge FC',1600,'Kiss Bela'),
+('Szeged United',1878,'Rudolf Wangnick')
 
 
 
