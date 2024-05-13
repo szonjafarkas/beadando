@@ -74,7 +74,7 @@ ALTER TABLE pontszamok
         REFERENCES csapatok ( nev );
 
 
-INSERT INTO csapatok (nev,alapitas_eve,helyszin,edzo)
+INSERT INTO csapatok (nev,alapitas_eve,edzo)
 values ('Binaris keresofa FC',2020,'Nagy Bela'),
 ('IKEA FC',1756,'Jurgen Czopf'),
 ('Kertvarosi kigyok',1954,'Kreativ Karoly'),
