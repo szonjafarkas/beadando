@@ -1,0 +1,2 @@
+ADATBÁZIS LEÍRÁSA
+Adatbázisunk fikcionális magyar labdarugó csapatokkal, mérkőzésekkel kapcsolatos információkat tárol. A táblák negyedik normál formában vannak, azaz nincsenek többértékű függőségek. Olyan kulcsoat választottunk amik egyértelműen meghatározzák a tábla többi elemét.
