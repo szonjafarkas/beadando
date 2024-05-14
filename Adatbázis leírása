@@ -1,8 +1,8 @@
 ADATBÁZIS LEÍRÁSA
 Adatbázisunk fikcionális magyar labdarugó csapatokkal, mérkőzésekkel kapcsolatos információkat tárol. A táblák negyedik normál formában vannak, azaz nincsenek többértékű függőségek. Olyan kulcsokat választottunk amik egyértelműen meghatározzák a tábla többi elemét.
 Adatbázisunk összesen 5 táblából áll melyek a következők:
-1. Csapatok
-2. Játékosok
-3. Mérkőzések
-4. Gólok
-5. Pontszámok
+1. Csapatok: Itt találhatóak a csapat neve, hogy melyik évben alapították és, hogy jelenleg ki az edzője.
+2. Játékosok: Ebben a táblában vannak a játékosok információi, a nevük, hogy melyik csapatban játszanak, életkoruk, magasságuk, pozíciójuk, és hogy hány sárga lapot és hány piros lapot szereztek eddig a mérkőzések során.
+3. Mérkőzések: Itt a mérkőzések id-ja, a hazai és vendég csapat neve, a mérkőzés időpontja és helyszíne, valamint a mérkőzést vezénylő bíró neve található.
+4. Gólok: Ez a tábla azt mutatja meg, hogy melyik mérkőzésen, melyik játékos hány gólt rúgott.
+5. Pontszámok: Ebben a táblában lehet látni, hogy melyik csapatnak hány pontja van jelenleg, ha egy győzelemért 3, döntetlenért 1, és vereségért 0 pont jár, valamint azt is ki lehet olvasni innen, hogy egy csapat hány mérkőzést játszott eddig.
