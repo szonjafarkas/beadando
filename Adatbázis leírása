@@ -1,2 +1,8 @@
 ADATBÁZIS LEÍRÁSA
 Adatbázisunk fikcionális magyar labdarugó csapatokkal, mérkőzésekkel kapcsolatos információkat tárol. A táblák negyedik normál formában vannak, azaz nincsenek többértékű függőségek. Olyan kulcsokat választottunk amik egyértelműen meghatározzák a tábla többi elemét.
+Adatbázisunk összesen 5 táblából áll melyek a következők:
+1. Csapatok
+2. Játékosok
+3. Mérkőzések
+4. Gólok
+5. Pontszámok
