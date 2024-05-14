@@ -29,3 +29,9 @@ SELECT pozicio as 'Pozíció',
        AVG(eletkor) as 'Átlagéletkor'
 FROM jatekosok
 GROUP BY pozicio
+
+/KISZÁMOLJA A CSAPATOK GYŐZELMI ARÁNYÁT, AMIKOR A GYŐZTES 3 PONTOT KAP A VESZTES PEDIG EGYET SEM, A KAPOTT PONTOK, ILLETVE JÁTSZOTT MÉRKŐZÉSEK ALAPJÁN/
+SELECT csapat as 'Csapat', pont AS 'Pontok', merkozesek_szama as 'Mérkőzések(db)', 
+ROUND(CAST(pont as decimal(10,2)) / 3 / CAST(merkozesek_szama as decimal(10,2)),2) AS 'Győzelmi arány'
+FROM pontszamok
+ORDER BY ROUND(pont as decimal(10,2)) / CAST(merkozesek_szama as decimal(10,2),2) DESC
