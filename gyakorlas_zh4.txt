@@ -1,0 +1,171 @@
+REDIS 4-8, 12-14
+
+ev kulcs létrehozása, lejárattal(10mp): set ev ex 10
+
+4.) A redis-cli-ben hozzon létre egy új hash kulcsot auto néven, 
+amelynek értéke a következő rekordnak megfelelő legyen:
+	rendszam tipus evjarat ertek xxx-111 Skoda Fabia 2012 1500000
+
+hset auto rendszam xxx111 tipus"Skoda fabia" evjarat 2012 ertek 1500000
+hgetall auto
+
+5.)A redis-cli-ben hozzon létre új lista típusú kulcsot tantargyak néven, 
+amelyek értékei a következők legyenek: programozas alapjai, matematika, adatbaziskezeles
+A lista végére szúrjon be még egy tantárgyat: operacios rendszerek 
+
+rpush tantargyak "programozas alapjai" matematika adatbaziskezeles
+lprush tantargyak "operacios rendszerek"
+lrange tantargyak 0 -1
+
+6.)A redis-cli-ben hozzunk létre új két új halmaz típusú kulcsot:
+numbers1: 10, 20, 30, 40, 50, 60 és numbers2: 15, 30, 45, 60
+Képezzük a halmazok metszetét!(sdiff, sunion, sinter)
+
+sadd numbers1 10 20 30 40 50 60
+sadd numbers2 15 30 45 60
+smembers numbers1
+smembers numbers2
+sinter numbers1 numbers2
+
+(átnevezés: rename réginév újnév
+létezik: exists réginév
+törlés: del kulcsnév)
+
+7.)A redis-cli-ben hozzunk létre új sorted set-et szemelyek néven, 
+ahol az egyes pontszámok az életkorok legyenek: Andras 15 éves, Peter 20 éves, Juli 18 éves
+Kérdezzük le a 16-18 pontszámok közötti személyek számát!
+
+zadd szemelyek 15 Andras 20 Peter 18 Juli
+zrange szemelyek 0 -1 withscores
+zcount szemelyek 16 18
+
+(pontszam szerint forditott sorrendben: zrange szemelyek 0 -1 rev
+Juli életkorának növelése 10-zel: zincrby szemelyek 10 Juli)
+
+8.)A redis-cli-ben kérdezzük le az adatbázisban lévő azon kulcsokat, amelyek nevében van a betű!
+
+scan 0 match *a*
+keys *a*
+
+12.)Hozza létre mezőnként és soronként külön kulcsok segítségével a dolgozo tábla következő rekordjait:
+nev munkakor kod Nagy Eva titkarno 1 Kiss Ilona konyvelo 2
+
+hset dolgozo:1 nev "Nagy Eva" munakor titkarno kod 1
+hset dolgozo:2 nev "Kiss Ilona" munkakor konyvelo kod 2
+hgetall dolgozo:1
+hgetall dolgozo:2
+
+13.)A redis-cli-ben hozzuk létre a projekt táblának megfelelő adatszerkezetet soronként és mezőnként külön kulcsokkal! 
+A kulcsok megadásánál ügyeljünk a projekt és a dolgozo tábla közötti kapcsolatra!
+projektkod projektnev dolgozokod 1 EURO-33 1 3 TRANS-22 2
+
+hset projekt:1:1 projektkod 1 projektnev EURO-33 dolgozokod 1
+hset projekt:3:2 projektkod 3 projektnev TRANS-22 dolgozokod 2
+hgetall projekt:1:1
+hgetall projekt:3:2
+
+14.)A redis-cli-ben hozzuk létre a dolgozo tábla (ld. 12-es feladat) 
+nev oszlopának megfelelő adatszerkezetet dolgozo_nev néven!
+
+zadd dolgozo_nev 1 "Nagy Eva" 2 "Kiss Ilona"
+zrange dolgozo_nev 0 -1 withscores
+
+(létrehozott kulcsok számának lekérdezése: dbsize
+kulcsok megjelenítése: scan 0)
+
+Cassandra  16,17, 20,21, 23,24,25, 27-30
+16,17
+20.)A DataStax CQL konzolon kérdezzük le, hogy mi azoknak a filmeknek a címe, 
+amelyek típusa Movie, és 2018-ban jelentek meg (release_year)!
+A szükséges csak az első 3 találatot jelenítse meg
+
+desc movies_and_tv;
+clear
+select title 
+	from movies_and_tv
+	where type='Movie' and release_year=2018
+	limit 3;
+
+21.)A DataStax Astra CQL konzolon kérdezzük le, 
+hogy a movies_and_tv táblában típusonként, azon belül évenként hány rekord van!
+
+select type, release_year, count(*)
+	from movies_and_tv
+	group by type, release_year;
+
+23.)A Cassandra CQL Shell-ben tegye aktuálissá az előzőleg létrehozott kps keyspace-t!
+Hozzon létre egy új táblát Szemely néven, amelynek mezői: nev - szöveg, szulev - egész, foglalkozas - szöveg
+A partition key legyen: (nev, szulev), a clustered key pedig foglalkozas
+
+use kps;
+create table szemely
+	(
+	nev text,
+	szulev int,
+	foglalkozas text,
+	PRIMARY KEY ((nev, szulev), foglalkozas)
+	);
+desc szemely;
+
+24.)A Cassandra CQL Shell-ben az előző feladatban létrehozott Szemely táblába rögzítsen 3 új rekordot:
+nev szulev foglalkozas Kiss Bela 2000 lakatos Nagy Ivo 1999 diak Toth Otto 1980 pincer
+A rögzítés után listázza a Szemely tábla tartalmát
+
+insert into szemely(nev, szulev, foglalkozas) values('Kiss Bela', 2000, 'lakatos');
+insert into szemely(nev, szulev, foglalkozas) values('Nagy Ivo', 1999, 'diak');
+insert into szemely(nev, szulev, foglalkozas) values('Toth Otto', 1980, 'pincer');
+select *
+	from szemely;
+
+25.)A Cassandra CQL Shell-ben készítsen indexet a Szemely táblához a foglalkozas oszlop alapján!
+Az index neve legyen i_foglalkozas
+
+create index i_foglalkozas on szemely(foglalkozas);
+desc table szemely;
+
+26.)A Cassandra CQL Shell-ben kérdezze le azokat a személyeket, akiknek foglalkozása pincer vagy lakatos!
+Csak a személyek neve jelenjen meg!
+A szükséges lekérdezést adja meg válaszként! (szükség esetén a lekérdezés végén használja az ALLOW FILTERING záradékot)
+
+27.)A Cassandra CQL Shell-ben bővítse a Személy táblát egy új mezővel
+A mező neve legyen Vegzettseg, típusa LIST
+Kiss Bela végzettsegei legyenek 'gepesz' és 'muszeresz' 
+(az UPDATE utasítás WHERE feltételében minden kulcsmezőt meg kell adni!)
+
+alter table szemely add vegzettseg list<text>;
+desc table szemely;
+update szemely
+	set vegzettseg=vegzettseg+ ['gepesz', 'muszeresz']
+	where nev='Kiss Bela' and szulev=2000 and foglalkozas='lakatos';
+select *
+	from szemely;
+
+28.)A Cassandra CQL Shell-ben bővítsük a Szemely táblát egy új mezővel!
+A mező neve legyen Nyelvtudas, típusa pedig SET
+Nagy Ivo nyelvtudása legyen: 'angol' és 'francia'
+
+alter table szemely add nyelvtudas set<text>;
+update szemely
+	set nyelvtudas=nyelvtudas+{'angol', 'francia'}
+	where nev='Nagy Ivo' and szulev=1999 and foglalkozas='diak';
+
+29.)A Cassandra CQL Shell-ben adjon hozzá még egy új oszlopot a Szemely táblához!
+Az oszlop neve legyen Autok, típusa MAP<TEXT, TEXT>
+Rögzítsük, hogy Kiss Bela esetén az Autok mező értéke: {'Skoda Fabia': 'abc-111', 'Audi A4': 'xyz-222' }
+
+alter table szemely add autok map<text,text>;
+update szemely 
+	set autok=autok + {'Skoda Fabia': 'abc-111', 'Audi A4': 'xyz-222' }
+	where nev='Kiss Bela' and szulev=2000 and foglalkozas='lakatos';
+
+30.)A Cassandra CQL Shell-ben módosítsuk a Szemely tábla következő adatait:
+Nagy Ivó megtanult németül is, vegyük fel ezt is a nyelvtudásai közé
+Toth Otto elvégezte a bármixer szakot, vegyük fel ezt a végzettségei közé
+
+update szemely 
+	set nyelvtudas=nyelvtudas+{'nemet'}
+	where nev='Nagy Ivo' and szulev=1999 and foglalkozas='diak';
+
+update szemely 
+	set vegzettseg=vegzettseg+ ['barmixer']
+	where nev='Toth Otto' and szulev=1980 and foglalkozas='pincer'; 
